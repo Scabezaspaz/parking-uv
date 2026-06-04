@@ -1,0 +1,52 @@
+name: Pipeline CI - ParkingUV
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install pytest pytest-bdd pytest-cov bandit locust
+
+      - name: Ejecutar tests unitarios
+        run: pytest tests/test_parking.py -v
+
+      - name: Ejecutar tests BDD
+        run: pytest tests/features/steps/steps_parking.py -v
+
+      - name: Tests de seguridad con bandit
+        run: bandit -r src/
+
+      - name: Reporte de cobertura
+        run: pytest tests/test_parking.py --cov=src --cov-report=term-missing --cov-fail-under=80
+
+  rendimiento:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install locust
+
+      - name: Ejecutar pruebas de rendimiento
+        run: locust -f locustfile.py --headless -u 10 -r 2 --run-time 30s --host http://localhost
