@@ -57,3 +57,13 @@ bandit -r src/
 | CP06 | Válida en tope | 1440 | $12000 | Borde |
 | CP07 | Válida sobre tope | 1500 | $12000 | Borde |
 | CP08 | VIP con descuento | 1440 | $9600 | Positivo |
+
+## Reporte de cobertura
+
+Name             Stmts   Miss  Cover   Missing
+----------------------------------------------
+src\parking.py      20      0   100%
+----------------------------------------------
+TOTAL               20      0   100%
+
+Cobertura total: 100% - supera el minimo requerido del 80%.
